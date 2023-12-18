@@ -1,0 +1,24 @@
+services:
+  db:
+    image: 'mariadb:latest'
+    environment:
+      - 'MYSQL_DATABASE=db_bridgefield'
+      - 'MYSQL_ROOT_PASSWORD=G8w5k5gy%'
+      - 'MYSQL_USER=jlacter'
+      - 'MYSQL_PASSWORD=G8w5k5gy%'
+    ports:
+      - '3300:3306'
+    volumes:
+      - '/opt/app/data:/var/lib/mysql'
+  app:
+    build:
+      dockerfile: DockerFile
+    image: 'payroll-rest-server:latest'
+    command: java -jar app.jar
+    working_dir: /opt/app
+    environment:
+      MARIADB_HOST: db
+      MARIADB_PORT: 3306
+      app_jar: Payroll-0.0.1-SNAPSHOT.jar
+      JAVA_OPTS: ''
+    
