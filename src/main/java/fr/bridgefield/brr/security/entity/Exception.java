@@ -15,7 +15,7 @@ public class Exception extends ServletException{
 	private static final String EXCEPTION_MESSAGES = "exceptionMessages";
 	
 	
-	protected static ResourceBundle messages = ResourceBundle.getBundle(EXCEPTION_MESSAGES, Locale.getDefault());
+	protected static ResourceBundle messages = ResourceBundle.getBundle(EXCEPTION_MESSAGES);
 	
 	private String localizedMessage;
 	private String key;

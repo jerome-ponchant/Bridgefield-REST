@@ -41,7 +41,7 @@ import fr.bridgefield.brr.security.utilities.JwtUtils;
 @SpringBootApplication()
 @CrossOrigin(origins = {"http://localhost:4200", "https://www.bridgefield.fr", "https://bridgefield.fr"})
 @RestController
-@RequestMapping("/payroll")
+@RequestMapping("/brr")
 public class StartApplication {
 
 	@Autowired

@@ -6,19 +6,25 @@ services:
       - 'MYSQL_ROOT_PASSWORD=G8w5k5gy%'
       - 'MYSQL_USER=jlacter'
       - 'MYSQL_PASSWORD=G8w5k5gy%'
-    ports:
-      - '3300:3306'
     volumes:
       - '/opt/app/data:/var/lib/mysql'
   app:
     build:
       dockerfile: DockerFile
-    image: 'payroll-rest-server:latest'
+    image: 'brr-rest:latest'
+    depends_on:
+      - db
+    ports:
+      - '8080:8080'      
+      - '8888:8888'
+      - '8443:8443' 
     command: java -jar app.jar
+    volumes:
+      - '/etc/letsencrypt/live/box.bridgefield.fr:/etc/letsencrypt/live/box.bridgefield.fr'
     working_dir: /opt/app
     environment:
       MARIADB_HOST: db
       MARIADB_PORT: 3306
-      app_jar: Payroll-0.0.1-SNAPSHOT.jar
+      app_jar: app.jar
       JAVA_OPTS: ''
-    
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,address=0.0.0.0:8888,server=y,suspend=n"
