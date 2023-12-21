@@ -1,7 +1,12 @@
 package fr.bridgefield.brr;
 
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -19,11 +24,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import fr.bridgefield.brr.dao.EmployeeRepository;
-import fr.bridgefield.brr.dao.entity.Employee;
+import fr.bridgefield.brr.dao.AddressRepository;
+import fr.bridgefield.brr.dao.UserRepository;
+import fr.bridgefield.brr.dao.entity.Address;
+import fr.bridgefield.brr.dao.entity.User;
 import fr.bridgefield.brr.security.SecurityRepository;
 import fr.bridgefield.brr.security.SecurityRepository.SecurityException;
 import fr.bridgefield.brr.security.dao.AuthorityRepository;
+import fr.bridgefield.brr.security.dao.PrincipalRepository;
 import fr.bridgefield.brr.security.entity.Authority;
 import fr.bridgefield.brr.security.entity.Principal;
 import fr.bridgefield.brr.security.utilities.JwtUtils;
@@ -37,7 +45,6 @@ class LoadDatabase {
 		 * 
 		 */
 		private static final long serialVersionUID = -7448537384463447502L;
-
 
 	    @Autowired
 	    private ApplicationContext applicationContext;
@@ -53,17 +60,15 @@ class LoadDatabase {
 		
 		@Autowired
 		JwtUtils jwtUtils;
+		
+		@Autowired
+		UserRepository userRepository;
+		
+		@Autowired
+		AddressRepository addressRepository;
 
 		String password = "G8w5k5gy%";
 		
-  @Bean
-  CommandLineRunner initDatabase(EmployeeRepository repository) {
-
-    return args -> {
-      log.info("Preloading " + repository.save(new Employee("Bilbo Baggins", "burglar")));
-      log.info("Preloading " + repository.save(new Employee("Frodo Baggins", "thief")));
-    };
-  }
 
   @Bean
   CommandLineRunner initUsers(@Autowired SecurityRepository repository) {
@@ -77,7 +82,20 @@ class LoadDatabase {
 	Set<Authority> roles = new HashSet<Authority>(Arrays.asList(admin));
 	PasswordEncoder encoder = new BCryptPasswordEncoder();
 	
-	Principal principal = repository.savePrincipal("jlacter", encoder.encode(password));
+	Date dob = Date.valueOf("1974-07-30");
+	Address address = new Address();
+	address.setAddress1("40, rue des quêteurs");
+	address.setCity("Toulouse");
+	address.setZip("31000");
+	
+	address = addressRepository.save(address);
+	
+	User user = new User("jponchant",roles, false, false, false, false, "jerome.ponchant@laposte.net", 
+			address, "Jérôme", "Ponchant", "", Locale.FRANCE, dob) ;
+	
+	userRepository.save(user);
+			
+	Principal principal = repository.savePrincipal("jponchant", encoder.encode(password));
 					
 	repository.setRole(principal, roles);
 
@@ -93,7 +111,8 @@ class LoadDatabase {
 	  
 	  return ( args -> {
 		try {
-		  Authentication a = new UsernamePasswordAuthenticationToken("jlacter", password);
+
+		Authentication a = new UsernamePasswordAuthenticationToken("jlacter", password);
 		  UserDetails userDetails = securityPepository.loadUserByUsername("jlacter");
 		  authProvider.authenticate(a );
 			

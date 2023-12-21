@@ -19,7 +19,6 @@ import fr.bridgefield.brr.security.entity.AuthenticationResponse;
 import fr.bridgefield.brr.security.entity.Exception;
 import fr.bridgefield.brr.security.entity.Principal;
 import fr.bridgefield.brr.security.entity.SecurityException;
-import fr.bridgefield.brr.security.entity.User;
 import fr.bridgefield.brr.security.utilities.JwtUtils;
 
 @CrossOrigin(origins = {"http://localhost:4200", "https://www.bridgefield.fr", "https://bridgefield.fr"})
@@ -60,7 +59,7 @@ public class SecurityController {
 		
 		
 		
-		AuthenticationResponse token = new AuthenticationResponse(jwtUtils.generateToken(p.getUsername()), new User(p));
+		AuthenticationResponse token = new AuthenticationResponse(jwtUtils.generateToken(p.getUsername()), p);
 		return ResponseEntity.ok(token);
 	}	
 	

@@ -7,13 +7,18 @@ import java.util.Set;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.InheritanceType;
 
 @Entity
+@Inheritance(strategy=InheritanceType.JOINED)
+@DiscriminatorColumn(name="principal_type")
 public class Principal implements UserDetails {
 
 	
@@ -49,7 +54,7 @@ public class Principal implements UserDetails {
 		this.isEnabled = isEnabled;
 	}
 
-	Principal() {
+	public Principal() {
 		super();
 	}
 
@@ -103,7 +108,7 @@ public class Principal implements UserDetails {
 		this.id = id;
 	}
 
-	void setUsername(String username) {
+	protected void setUsername(String username) {
 		this.username = username;
 	}
 

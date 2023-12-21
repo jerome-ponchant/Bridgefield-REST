@@ -27,14 +27,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.bridgefield.brr.dao.EmployeeNotFoundException;
-import fr.bridgefield.brr.dao.EmployeeRepository;
-import fr.bridgefield.brr.dao.entity.Employee;
+
 import fr.bridgefield.brr.security.SecurityRepository;
 import fr.bridgefield.brr.security.entity.AuthenticationRequest;
 import fr.bridgefield.brr.security.entity.AuthenticationResponse;
 import fr.bridgefield.brr.security.entity.Principal;
-import fr.bridgefield.brr.security.entity.User;
 import fr.bridgefield.brr.security.utilities.JwtUtils;
 
 
@@ -43,10 +40,6 @@ import fr.bridgefield.brr.security.utilities.JwtUtils;
 @RestController
 @RequestMapping("/brr")
 public class StartApplication {
-
-	@Autowired
-	private EmployeeRepository repository;
-
 
 	public StartApplication() {
 		
@@ -57,42 +50,13 @@ public class StartApplication {
 		SpringApplication.run(StartApplication.class, args);
 	}
     
-
-	
 	@GetMapping("/hello")
     String hello(@RequestParam(value = "name", defaultValue = "World") String name) {
       return String.format("Hello Magnificient %s!", name);
     }	
 
 
-    @GetMapping("/employees")
-    Collection<Employee> all(){
-    	return repository.findAll();
-    }
-    
-    @GetMapping("/employees/{id}")
-    Employee read(@PathVariable Long id) {
-    	return repository.findById(id)
-    			.orElseThrow( () -> 
-    					{throw new EmployeeNotFoundException(id);}
-    					);
-    }
-    
-    @PostMapping(path = "/employees")
-    Employee create(@RequestBody Employee e) {
-    	return repository.save(e);
-    }
-    
-    @PutMapping("/employees/{id}")
-    Employee update(@RequestBody Employee e, @PathVariable Long id) {
-    	e.setId(id);
-    	return repository.save(e);
-    }
-    
-    @DeleteMapping("/employees/{id}")
-    void delete(@PathVariable Long id) {
-    	repository.deleteById(id);
-    }
+
     
 
 }

@@ -6,12 +6,12 @@ public class AuthenticationResponse {
 
 	String accessToken;
 	
-	User user;
+	Principal principal;
 
-	public AuthenticationResponse(String accessToken, User user) {
+	public AuthenticationResponse(String accessToken, Principal principal) {
 		super();
 		this.accessToken = accessToken;
-		this.user = user;
+		this.principal = principal;
 		
 	}
 
@@ -25,12 +25,12 @@ public class AuthenticationResponse {
 
 
 
-	public User getUser() {
-		return user;
+	public Principal getPrincipal() {
+		return principal;
 	}
 
-	public void setUser(User principal) {
-		this.user = principal;
+	public void Principal(Principal principal) {
+		this.principal = principal;
 	}
 	
 }
