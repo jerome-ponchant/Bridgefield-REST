@@ -38,7 +38,7 @@ public class SecurityRepository implements UserDetailsService {
 	};
 
 	public Principal savePrincipal(String username, String encryptedPassword) throws SecurityException {
-		Principal p = new Principal(username, encryptedPassword, null, true, true, true, true);
+		Principal p = new Principal(username, encryptedPassword, null, true, true, true, true, null);
 		List<Principal> l = principalRepository.findByUsername(username);
 		if (l == null || l.size() != 0) {
 			p = l.get(0);

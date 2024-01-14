@@ -8,6 +8,7 @@ import java.util.Set;
 import fr.bridgefield.brr.security.entity.Authority;
 import fr.bridgefield.brr.security.entity.Principal;
 import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
 
@@ -21,14 +22,20 @@ public class User extends Principal {
 	 */
 	private static final long serialVersionUID = 7687735538279516011L;
 	
+	public static final String PRINCIPAL_TYPE="USER" ;
+	
 	String eMail;
-	@OneToOne
+	@Embedded
 	Address address;
 	String firstName;
 	String lastName;
 	String pseudo;
+	
 	Locale preferredLocale;
 	Date dateOfBirth;
+	
+	@OneToOne
+	Photo photo;
 	
 	public User() {
 		super();
@@ -38,7 +45,7 @@ public class User extends Principal {
 			boolean isAccountNonLocked, boolean isCredentialsNonExpired, boolean isEnabled, String eMail,
 			Address address, String firstName, String lastName, String pseudo, Locale preferredLocale,
 			Date dateOfBirth) {
-		super(username, "", roles, isAccountNonExpired, isAccountNonLocked, isCredentialsNonExpired, isEnabled);
+		super(username, "", roles, isAccountNonExpired, isAccountNonLocked, isCredentialsNonExpired, isEnabled, "USER");
 
 		this.eMail = eMail;
 		this.address = address;
@@ -47,6 +54,7 @@ public class User extends Principal {
 		this.pseudo = pseudo;
 		this.preferredLocale = preferredLocale;
 		this.dateOfBirth = dateOfBirth;
+		
 	}
 	
 	@Override
@@ -108,6 +116,14 @@ public class User extends Principal {
 
 	public void setDateOfBirth(Date dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
+	}
+
+	public Photo getPhoto() {
+		return photo;
+	}
+
+	public void setPhoto(Photo photo) {
+		this.photo = photo;
 	}
 
 	@Override

@@ -17,6 +17,8 @@ public class Authority implements org.springframework.security.core.GrantedAutho
 	 * 
 	 */
 	private static final long serialVersionUID = 7668844408931173991L;
+	
+	public final static String ROLE_TENANT_NAME = "ROLE_TENANT";
 
 	@Id
 	@GeneratedValue

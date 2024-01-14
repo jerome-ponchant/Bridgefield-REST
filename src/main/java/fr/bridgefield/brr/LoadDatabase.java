@@ -1,5 +1,14 @@
 package fr.bridgefield.brr;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -12,6 +21,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -24,9 +34,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import fr.bridgefield.brr.dao.AddressRepository;
+import fr.bridgefield.brr.dao.CityRepository;
 import fr.bridgefield.brr.dao.UserRepository;
 import fr.bridgefield.brr.dao.entity.Address;
+import fr.bridgefield.brr.dao.entity.City;
 import fr.bridgefield.brr.dao.entity.User;
 import fr.bridgefield.brr.security.SecurityRepository;
 import fr.bridgefield.brr.security.SecurityRepository.SecurityException;
@@ -65,17 +76,26 @@ class LoadDatabase {
 		UserRepository userRepository;
 		
 		@Autowired
-		AddressRepository addressRepository;
+		CityRepository cityRepository;
 
 		String password = "G8w5k5gy%";
+		
+		@Value("${fr.bridgefield.properties.internal.baseURI}")
+		String imageBase;
 		
 
   @Bean
   CommandLineRunner initUsers(@Autowired SecurityRepository repository) {
 	 System.out.println(applicationContext);
 	  Authority admin = new Authority("ROLE_ADMIN");
+	  Authority tenant = new Authority("ROLE_TENANT");
+	  Authority guest = new Authority("ROLE_GUEST");
+	  Authority renter = new Authority("ROLE_RENTER");
 	  try {
 		admin = repository.save(admin);
+		repository.save(tenant);
+		admin = repository.save(guest);
+		admin = repository.save(renter);
 	} catch (SecurityException e) {
 	}
 	
@@ -83,13 +103,14 @@ class LoadDatabase {
 	PasswordEncoder encoder = new BCryptPasswordEncoder();
 	
 	Date dob = Date.valueOf("1974-07-30");
+	
+	City city = cityRepository.findByZip("31000");
+	
 	Address address = new Address();
 	address.setAddress1("40, rue des quêteurs");
-	address.setCity("Toulouse");
-	address.setZip("31000");
+	address.setCity(city);
 	
-	address = addressRepository.save(address);
-	
+
 	User user = new User("jponchant",roles, false, false, false, false, "jerome.ponchant@laposte.net", 
 			address, "Jérôme", "Ponchant", "", Locale.FRANCE, dob) ;
 	
@@ -107,7 +128,7 @@ class LoadDatabase {
 
   @Bean
   @Transactional
-  CommandLineRunner test() {
+  CommandLineRunner test2() {
 	  
 	  return ( args -> {
 		try {
@@ -127,4 +148,28 @@ class LoadDatabase {
   
   
   }
+  
+/*  @Bean
+  CommandLineRunner testFile() {
+	  return (args -> {
+		  File f = new File(new URI(imageBase+"/test.file"));
+		  FileOutputStream fos = new FileOutputStream(f);
+		  OutputStreamWriter w = new OutputStreamWriter(fos);
+		  w.write("Bla");
+		  w.flush();
+		  w.close();
+		  String imageBase="file:///C:/Users/jerom/brr/img";
+		  File f = new File(new URI(imageBase+"/user.json"));
+		  FileInputStream fis = new FileInputStream(f);
+		  InputStreamReader isr = new InputStreamReader(fis);
+		  String s = Files.readString(Paths.get(imageBase+"/user.json"), Charset.defaultCharset());;
+		  System.out.println("READ FILE ----------------------------");
+		  System.out.println(s);
+		  System.out.println("END FILE");
+	  });
+	  
+  }*/
+  
+  
+  
  }

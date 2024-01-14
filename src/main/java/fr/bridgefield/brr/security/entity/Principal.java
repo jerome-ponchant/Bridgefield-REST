@@ -7,7 +7,14 @@ import java.util.Set;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+import fr.bridgefield.brr.dao.entity.Organization;
+import fr.bridgefield.brr.dao.entity.User;
+import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -16,17 +23,35 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.InheritanceType;
 
+
+@JsonTypeInfo(
+        include = JsonTypeInfo.As.EXISTING_PROPERTY,
+        property = "principalType",
+        use = JsonTypeInfo.Id.NAME,
+        visible = true
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = User.class, name = "USER"),
+        @JsonSubTypes.Type(value = Organization.class, name = "ORGANIZATION")
+})
+
+
+
+
+
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-@DiscriminatorColumn(name="principal_type")
+@DiscriminatorColumn(name="principalType")
+@DiscriminatorValue("PRINCIPAL")
 public class Principal implements UserDetails {
 
-	
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1289471056417133798L;
-
+	public static final String PRINCIPAL_TYPE="PRINCIPAL" ;
+	
 	@Id
 	@GeneratedValue()
 	Long id;
@@ -41,9 +66,12 @@ public class Principal implements UserDetails {
 	private boolean isCredentialsNonExpired;
 	private boolean isEnabled;
 	
+	@Column(insertable=false, updatable=false)
+	protected String principalType;
+	
 	public Principal(String username, String password, Set<Authority> roles,
 			boolean isAccountNonExpired, boolean isAccountNonLocked, boolean isCredentialsNonExpired,
-			boolean isEnabled) {
+			boolean isEnabled, String principalType) {
 		super();
 		this.username = username;
 		this.password = password;
@@ -52,6 +80,7 @@ public class Principal implements UserDetails {
 		this.isAccountNonLocked = isAccountNonLocked;
 		this.isCredentialsNonExpired = isCredentialsNonExpired;
 		this.isEnabled = isEnabled;
+		this.principalType=principalType;
 	}
 
 	public Principal() {
@@ -120,20 +149,24 @@ public class Principal implements UserDetails {
 		this.authorities = authorities;
 	}
 
-	void setAccountNonExpired(boolean isAccountNonExpired) {
+	public void setAccountNonExpired(boolean isAccountNonExpired) {
 		this.isAccountNonExpired = isAccountNonExpired;
 	}
 
-	void setAccountNonLocked(boolean isAccountNonLocked) {
+	public void setAccountNonLocked(boolean isAccountNonLocked) {
 		this.isAccountNonLocked = isAccountNonLocked;
 	}
 
-	void setCredentialsNonExpired(boolean isCredentialsNonExpired) {
+	public void setCredentialsNonExpired(boolean isCredentialsNonExpired) {
 		this.isCredentialsNonExpired = isCredentialsNonExpired;
 	}
 
-	void setEnabled(boolean isEnabled) {
+	public void setEnabled(boolean isEnabled) {
 		this.isEnabled = isEnabled;
+	}
+
+	public String getPrincipalType() {
+		return principalType;
 	}
 
 	@Override
