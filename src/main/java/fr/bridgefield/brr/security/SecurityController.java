@@ -127,7 +127,7 @@ public class SecurityController {
 		Photo p;
 		String mail="";
 		Locale locale=Locale.US;
-		
+		try {
 			switch(body.getPrincipalType()) {
 				case User.PRINCIPAL_TYPE :
 					User u = (User)body;
@@ -160,7 +160,12 @@ public class SecurityController {
 					}
 					break;
 			}
-			
+		}
+		catch (Exception e) {
+			SecurityException se = new SecurityException();
+			se.setLocalizedMessage(SecurityException.FR_BRIDGEFIELD_PRINCIPAL_NO_CITY);
+			throw (se);
+		}
 		
 		body = principalRepository.save(body);
 		try {
@@ -174,32 +179,35 @@ public class SecurityController {
 		return ResponseEntity.ok(body);
 	}
 	
-	private void updateCity(Address address) {
+	private void updateCity(Address address) throws Exception {
 		
 		City c = address.getCity();
-		List<City> cities = cityRepository.findByZipAndName2(c.getZip(), c.getName2().toUpperCase());
+		if (c.getId() == null || c.getId() <0) {
+
+			List<City> cities;
 		
-		if(cities.size() > 0)
-			c = cities.get(0);
-		else{
-			cities = cityRepository.findFirst10ByName2StartsWith(c.getName2().toUpperCase());
-			if(cities.size() > 0) {
+			if(c.getName2()== null) throw new Exception();
+			cities= cityRepository.findByName2(c.getName2().toUpperCase());
+			if(cities.size() > 0)
 				c = cities.get(0);
-			}
 			else{
-				cities = cityRepository.findFirst10ByZipStartsWith(c.getZip());
-				if(cities.size() > 0) {
-					c = cities.get(0);
+				City c2 = cityRepository.findByZip(c.getZip());
+				if(c2!=null) {
+					c = c2;
 				}
 				else {
-					City last = cityRepository.findByNameLikeOrderByIdDesc("%").get(0);
+					City last = cityRepository.findByIdGreaterThanOrderByIdDesc(0).get(0);
 					c.setId(last.getId()+1);
+					c.setName2(c.getName2().toUpperCase());
 					c = cityRepository.save(c);
 				}
 			}
+			address.setCity(c);
 		}
-		address.setCity(c);
 	}
+		
+		
+	
 		
 
 	@CrossOrigin

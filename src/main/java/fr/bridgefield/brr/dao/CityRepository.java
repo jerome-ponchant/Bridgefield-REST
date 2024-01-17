@@ -16,5 +16,13 @@ public interface CityRepository extends JpaRepository<City, Long> {
 	
 	public List<City> findByZipAndName2(String zip, String name2);
 	
-	public List<City> findByNameLikeOrderByIdDesc(String name);
+	public List<City> findByIdGreaterThanOrderByIdDesc(int i);
+
+	public List<City> findByName2(String name2);
+
+	public List<City> findByZipStartingWith(String zip);
+
+	public List<City> findByName2StartingWith(String name2);
+
+	public List<City> findByIdGreaterThanOrderByZip(int i);;
 }

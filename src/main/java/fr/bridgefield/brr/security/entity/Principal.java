@@ -50,6 +50,7 @@ public class Principal implements UserDetails {
 	 * 
 	 */
 	private static final long serialVersionUID = 1289471056417133798L;
+	public static final String GUEST_USER_NAME = "guest_user";
 	public static final String PRINCIPAL_TYPE="PRINCIPAL" ;
 	
 	@Id

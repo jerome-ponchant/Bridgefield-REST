@@ -27,6 +27,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -56,6 +57,7 @@ class LoadDatabase {
 		 * 
 		 */
 		private static final long serialVersionUID = -7448537384463447502L;
+		
 
 	    @Autowired
 	    private ApplicationContext applicationContext;
@@ -65,6 +67,9 @@ class LoadDatabase {
 		
 		@Autowired
 		AuthenticationProvider authProvider;
+		
+		@Autowired
+		private PrincipalRepository principalRepository;
 		
 		@Autowired
 		SecurityRepository securityPepository;
@@ -83,6 +88,7 @@ class LoadDatabase {
 		@Value("${fr.bridgefield.properties.internal.baseURI}")
 		String imageBase;
 		
+		
 
   @Bean
   CommandLineRunner initUsers(@Autowired SecurityRepository repository) {
@@ -94,13 +100,33 @@ class LoadDatabase {
 	  try {
 		admin = repository.save(admin);
 		repository.save(tenant);
-		admin = repository.save(guest);
+		guest = repository.save(guest);
 		admin = repository.save(renter);
 	} catch (SecurityException e) {
 	}
 	
 	Set<Authority> roles = new HashSet<Authority>(Arrays.asList(admin));
 	PasswordEncoder encoder = new BCryptPasswordEncoder();
+	
+	Principal guestPrincipal = null;
+	try {
+		guestPrincipal = (Principal) principalRepository.findByUsername(Principal.GUEST_USER_NAME).get(0);
+	}
+	catch (Exception e) {
+		// TODO: handle exception
+		if(guestPrincipal == null) {
+			guestPrincipal = new Principal(
+					Principal.GUEST_USER_NAME,
+					encoder.encode(""),
+					new HashSet<Authority>(Arrays.asList(guest)), 
+					true, true, true, true,
+					Principal.PRINCIPAL_TYPE);
+			principalRepository.save(guestPrincipal);
+					
+		}
+	}
+	
+	
 	
 	Date dob = Date.valueOf("1974-07-30");
 	
@@ -111,6 +137,9 @@ class LoadDatabase {
 	address.setCity(city);
 	
 
+	
+	
+	
 	User user = new User("jponchant",roles, false, false, false, false, "jerome.ponchant@laposte.net", 
 			address, "Jérôme", "Ponchant", "", Locale.FRANCE, dob) ;
 	

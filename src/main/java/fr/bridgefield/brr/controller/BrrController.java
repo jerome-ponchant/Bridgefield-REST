@@ -1,5 +1,6 @@
 package fr.bridgefield.brr.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,42 @@ public class BrrController {
 		
 		return response;
 	}
-
+	
+	@CrossOrigin
+	@GetMapping("/sandbox/cities/zip/startsWith/{startZip}")
+	ResponseEntity<List<City>> OtherCitiesFirstZip(@PathVariable("startZip") String body) throws SecurityException{
+		ResponseEntity<List<City>> response = new ResponseEntity<List<City>>(cityRepository.findFirst10ByZipStartsWith(body),HttpStatus.OK);
+		
+		return response;
+	}	
+	
+	@CrossOrigin
+	@GetMapping("/sandbox/cities/findByZipAndName2/")
+	ResponseEntity<List<City>> findByZipAndName2(@RequestParam(name = "zip") String zip, @RequestParam(name = "name2") String name2) throws SecurityException{
+		ResponseEntity<List<City>> response;
+		List<City> listZip = new ArrayList<City>();
+		if( zip !="" ) listZip= cityRepository.findByZipStartingWith(zip);
+		
+		List<City> listName2 = new ArrayList<City>();
+		if(name2!="" )listName2 = cityRepository.findByName2StartingWith(name2);
+		
+		response = new ResponseEntity<List<City>>(intersection(listZip, listName2), HttpStatus.FOUND); 
+		
+		return response;
+	}
+	
+	@CrossOrigin
+	@GetMapping("/sandbox/cities/findAll/")
+	ResponseEntity<List<City>> findAll(){
+		ResponseEntity<List<City>> response;
+		List<City> list = new ArrayList<City>();
+		list = cityRepository.findByIdGreaterThanOrderByZip(-1);
+		
+		response = new ResponseEntity<List<City>>(list,HttpStatus.OK);
+		
+		return response;
+	}
+	
 	@CrossOrigin
 	@GetMapping("/cities/name2/startsWith/{startName}")
 	ResponseEntity<List<City>> CitiesFirstName(@PathVariable("startName") String body) throws SecurityException{
@@ -65,4 +101,18 @@ public class BrrController {
 		return new ResponseEntity<Photo>(response,HttpStatus.OK);
 	
 	}
+	
+	private <T> List<T> intersection(List<T> list1, List<T> list2) {
+        List<T> list = new ArrayList<T>();
+        if(list1.isEmpty())return list2;
+        if(list2.isEmpty()) return list1;
+        for (T t : list1) {
+            if(list2.contains(t)) {
+                list.add(t);
+            }
+        }
+
+        return list;
+    }
+	
 }

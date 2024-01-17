@@ -12,4 +12,6 @@ public class SecurityException extends Exception {
 	public static final String FR_BRIDGEFIELD_PRINCIPAL_NOT_FOUND = "fr.bridgefield.principalnotfound";
 	public static final String FR_BRIDGEFIELD_PRINCIPAL_NO_MAIL = "fr.bridgefield.principalnomail";
 	public static final String FR_BRIDGEFIELD_LOCKED_PRINCIPAL = "fr.bridgefield.lockedprincipal";
+	public static final String FR_BRIDGEFIELD_PRINCIPAL_NO_CITY = "fr.bridgefield.nocity";
+	
 }

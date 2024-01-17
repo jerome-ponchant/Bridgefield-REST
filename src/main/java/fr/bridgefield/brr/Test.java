@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
@@ -18,6 +19,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,6 +31,7 @@ import fr.bridgefield.brr.services.mail.MailService;
 import fr.bridgefield.brr.security.entity.Principal;
 
 @SpringBootApplication()
+
 public class Test implements CommandLineRunner{
 
     private ApplicationContext applicationContext;
@@ -40,6 +43,9 @@ public class Test implements CommandLineRunner{
     Test(){
     	
     }
+    
+
+    String secret="";
     
     @Autowired
     CityRepository cityRepository;
@@ -74,7 +80,7 @@ public class Test implements CommandLineRunner{
 		 }*/
     	
     	//mailService.sendSimpleMessage("jerome.ponchant@laposte.net", "SUBJECT", "Bridgefield");
-    	System.out.println("Mail sended.");
+    	System.out.println("Parameter value : "+secret);
     }
 	
 	public static void main(String[] args) {
