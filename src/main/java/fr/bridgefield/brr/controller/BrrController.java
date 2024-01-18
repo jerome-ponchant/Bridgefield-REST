@@ -37,23 +37,16 @@ public class BrrController {
 	private PhotoRepository photoRepository;
 
 	@CrossOrigin
-	@GetMapping("/cities/zip/startsWith/{startZip}")
+	@GetMapping("/public/cities/zip/startsWith/{startZip}")
 	ResponseEntity<List<City>> CitiesFirstZip(@PathVariable("startZip") String body) throws SecurityException{
 		ResponseEntity<List<City>> response = new ResponseEntity<List<City>>(cityRepository.findFirst10ByZipStartsWith(body),HttpStatus.OK);
 		
 		return response;
 	}
+
 	
 	@CrossOrigin
-	@GetMapping("/sandbox/cities/zip/startsWith/{startZip}")
-	ResponseEntity<List<City>> OtherCitiesFirstZip(@PathVariable("startZip") String body) throws SecurityException{
-		ResponseEntity<List<City>> response = new ResponseEntity<List<City>>(cityRepository.findFirst10ByZipStartsWith(body),HttpStatus.OK);
-		
-		return response;
-	}	
-	
-	@CrossOrigin
-	@GetMapping("/sandbox/cities/findByZipAndName2/")
+	@GetMapping("/public/cities/findByZipAndName2/")
 	ResponseEntity<List<City>> findByZipAndName2(@RequestParam(name = "zip") String zip, @RequestParam(name = "name2") String name2) throws SecurityException{
 		ResponseEntity<List<City>> response;
 		List<City> listZip = new ArrayList<City>();
@@ -68,7 +61,7 @@ public class BrrController {
 	}
 	
 	@CrossOrigin
-	@GetMapping("/sandbox/cities/findAll/")
+	@GetMapping("/public/cities/findAll/")
 	ResponseEntity<List<City>> findAll(){
 		ResponseEntity<List<City>> response;
 		List<City> list = new ArrayList<City>();
@@ -80,7 +73,7 @@ public class BrrController {
 	}
 	
 	@CrossOrigin
-	@GetMapping("/cities/name2/startsWith/{startName}")
+	@GetMapping("/public/cities/name2/startsWith/{startName}")
 	ResponseEntity<List<City>> CitiesFirstName(@PathVariable("startName") String body) throws SecurityException{
 		ResponseEntity<List<City>> response = new ResponseEntity<List<City>>(cityRepository.findFirst10ByName2StartsWith(body),HttpStatus.OK);
 		
@@ -88,14 +81,14 @@ public class BrrController {
 	}
 
 	@CrossOrigin
-	@GetMapping("/sandbox/photos/id/{id}")
+	@GetMapping("/public/photos/id/{id}")
 	ResponseEntity<Photo> photoById(@PathVariable("id") Long id) throws Exception{
 		ResponseEntity<Photo> response = new ResponseEntity<Photo>(photoRepository.findById(id).get(),HttpStatus.OK);
 		return response;
 	}
 	
 	@CrossOrigin
-	@PostMapping("/sandbox/photos")
+	@PostMapping("/public/photos")
 	ResponseEntity<Photo> savePhoto(@RequestBody Photo photo){
 		Photo response = photoRepository.save(photo);
 		return new ResponseEntity<Photo>(response,HttpStatus.OK);

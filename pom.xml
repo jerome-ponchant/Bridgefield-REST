@@ -77,16 +77,18 @@
 			<id>dev</id>
 			<properties>
 				<activatedProperties>dev</activatedProperties>
-			</properties>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
+          		<spring.boot.mainclass>fr.bridgefield.brr.StartApplication</spring.boot.mainclass>
+        	</properties>
 		</profile>
 		<profile>
 			<id>prod</id>
 			<properties>
 				<activatedProperties>prod</activatedProperties>
+				<spring.boot.mainclass>fr.bridgefield.brr.StartApplication</spring.boot.mainclass>
 			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 		</profile>
 	</profiles>
 	<build>
@@ -94,6 +96,16 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				    <executions>
+				      <execution>
+				        <goals>
+				          <goal>repackage</goal>
+				        </goals>
+				        <configuration>
+				          <mainClass>${spring.boot.mainclass}</mainClass>
+				        </configuration>
+				      </execution>
+				    </executions>
 			</plugin>
 			<!--plugin>
 			    <groupId>org.apache.maven.plugins</groupId>

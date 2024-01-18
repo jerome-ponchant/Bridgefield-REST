@@ -59,9 +59,8 @@ public class WebSecurityConfigurer {
         http.csrf(csrf -> csrf.disable())
                 .cors();
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		http.authorizeRequests().requestMatchers("/brr/cities/**").permitAll();
-		http.authorizeRequests().requestMatchers("/brr/sandbox/**").permitAll();
-		http.authorizeRequests().requestMatchers("/brr/**").authenticated();
+		http.authorizeRequests().requestMatchers("/brr/public/**").permitAll();
+		http.authorizeRequests().requestMatchers("/brr/secured/**").authenticated();
         http.exceptionHandling();
 		http.addFilterBefore(new JwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
 

@@ -29,6 +29,19 @@
 				"type": "dev",
 				"auth-model": "native"
 			}
+		},
+		"sqlite_jdbc-18d07287585-79f5a0c0430bb3f": {
+			"provider": "sqlite",
+			"driver": "sqlite_jdbc",
+			"name": "addok.db",
+			"save-password": true,
+			"configuration": {
+				"database": "C:\\eclipse-workspace\\2023-09\\addok.db",
+				"url": "jdbc:sqlite:C:\\eclipse-workspace\\2023-09\\addok.db",
+				"configurationType": "MANUAL",
+				"type": "dev",
+				"auth-model": "native"
+			}
 		}
 	},
 	"connection-types": {

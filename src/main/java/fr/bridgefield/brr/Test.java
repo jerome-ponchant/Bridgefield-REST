@@ -30,7 +30,7 @@ import fr.bridgefield.brr.dao.entity.Photo;
 import fr.bridgefield.brr.services.mail.MailService;
 import fr.bridgefield.brr.security.entity.Principal;
 
-@SpringBootApplication()
+
 
 public class Test implements CommandLineRunner{
 
